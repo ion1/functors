@@ -1,0 +1,34 @@
+graph {
+  ratio=compress;
+  ranksep=0;
+  rankdir=LR;
+
+  node [ fontname="Mono", shape=box, style=filled
+       , fillcolor="#0077ff33"
+       , width=0, height=0
+       ];
+
+  edge [ color="#0077ff55" ];
+
+  eq [ label="≡", shape=circle, style=filled
+     , color="#0077ff55", fillcolor="#ffffff00"
+     ];
+
+  "<$" [ label="a <$ f" ];
+
+  subgraph cluster_fmap {
+    color="#00000000";
+    "<$>" [ label="const a <$> f"        ];
+    "=<<" [ label="const (pure a) =<< f" ];
+  }
+
+  subgraph cluster_applicative {
+    color="#00000000";
+    "<*"  [ label="pure a <* f"          ];
+    "<*>" [ label="pure (const a) <*> f" ];
+  }
+
+  "<$" -- eq -- { "<$>" "=<<" "<*" "<*>" };
+}
+
+// vim:set et sw=2 sts=2:
