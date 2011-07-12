@@ -66,7 +66,7 @@ theNodes =
               , newline
               , HtmlStr "result in the pure value ", code "a", HtmlStr "."
               ]
-            , [ codeType "(<$) ∷ Functor f ⇒ a → f b → f a" ]
+            , [ codeType "(<$) ∷ Functor f ⇒ b → f a → f b" ]
             ]
 
     fmapAtt =
@@ -100,7 +100,7 @@ theNodes =
               , code "f", HtmlStr ", discarding the result value of "
               , code "f", HtmlStr "."
               ]
-            , [ codeType "(<*) ∷ Applicative f ⇒ f a → f b → f a" ]
+            , [ codeType "(<*) ∷ Applicative f ⇒ f b → f a → f b" ]
             ]
 
     apAtt =
