@@ -1,10 +1,10 @@
-sources := functors.dot
-targets := $(sources:.dot=.png)
+sources := Functors.hs
+targets := functors.png
 
 all : $(targets)
 
-%.png : %.dot
-	dot -Tpng -o'$@' '$<'
+functors.png : Functors.hs
+	runhaskell '$<'
 	optipng -o4 '$@' || :
 
 clean ::
