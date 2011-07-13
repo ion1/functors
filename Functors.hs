@@ -38,15 +38,14 @@ theGraph = graphToDot params (run_ GI.empty theNodes)
 theNodes :: NodeMapM Attributes Attributes Gr ()
 theNodes =
   do
-    mapM_ insMapNodeM [ eqAtt, fmapConstAtt
-                      , fmapAtt, bindAtt
-                      , discardAtt, apAtt ]
+    mapM_ insMapNodeM [ eqAtt, fmapConstAtt, discardAtt
+                      , fmapAtt, bindAtt, apAtt ]
 
     insMapEdgeM (fmapConstAtt, eqAtt, [])
+    insMapEdgeM (discardAtt, eqAtt, [])
 
     insMapEdgeM (eqAtt, fmapAtt,    [])
     insMapEdgeM (eqAtt, bindAtt,    [])
-    insMapEdgeM (eqAtt, discardAtt, [])
     insMapEdgeM (eqAtt, apAtt,      [])
 
     pure ()
@@ -62,11 +61,23 @@ theNodes =
 
     fmapConstAtt =
       fNode [ [ codeTitle "a <$ f" ]
-            , [ HtmlStr "For each value drawn from ", code "f", HtmlStr ","
+            , [ HtmlStr "For each value drawn from ", code "f"
+              , HtmlStr ", discard it"
               , newline
-              , HtmlStr "result in the pure value ", code "a", HtmlStr "."
+              , HtmlStr "and result in the pure value ", code "a", HtmlStr "."
               ]
             , [ codeType "(<$) ∷ Functor f ⇒ b → f a → f b" ]
+            ]
+
+    discardAtt =
+      fNode [ [ codeTitle "pure a <* f" ]
+            , [ HtmlStr "Sequentially run the actions "
+              , code "pure a", HtmlStr " and"
+              , newline
+              , code "f", HtmlStr ", discarding the result value of "
+              , code "f", HtmlStr "."
+              ]
+            , [ codeType "(<*) ∷ Applicative f ⇒ f b → f a → f b" ]
             ]
 
     fmapAtt =
@@ -90,17 +101,6 @@ theNodes =
               , HtmlStr ", or ", code "pure a", HtmlStr "."
               ]
             , [ codeType "(=<<) ∷ Monad f ⇒ (a → f b) → f a → f b" ]
-            ]
-
-    discardAtt =
-      fNode [ [ codeTitle "pure a <* f" ]
-            , [ HtmlStr "Sequentially run the actions "
-              , code "pure a", HtmlStr " and"
-              , newline
-              , code "f", HtmlStr ", discarding the result value of "
-              , code "f", HtmlStr "."
-              ]
-            , [ codeType "(<*) ∷ Applicative f ⇒ f b → f a → f b" ]
             ]
 
     apAtt =
