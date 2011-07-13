@@ -47,14 +47,14 @@ theNodes :: NodeMapM Attributes Attributes Gr ()
 theNodes =
   do
     mapM_ insMapNodeM [ eqAtt, fmapConstAtt, discardAtt
-                      , fmapAtt, bindAtt, apAtt ]
+                      , fmapAtt, apAtt, bindAtt ]
 
     insMapEdgeM (fmapConstAtt, eqAtt, [])
     insMapEdgeM (discardAtt, eqAtt, [])
 
     insMapEdgeM (eqAtt, fmapAtt,    [])
-    insMapEdgeM (eqAtt, bindAtt,    [])
     insMapEdgeM (eqAtt, apAtt,      [])
+    insMapEdgeM (eqAtt, bindAtt,    [])
 
     pure ()
 
@@ -69,9 +69,9 @@ theNodes =
 
     fmapConstAtt =
       fNode [ [ codeTitle "a <$ f" ]
-            , [ "For each value drawn from ", code "f", ", discard it"
+            , [ "Run the action ", code "f", ", replacing the result"
               , newline
-              , "and result in the pure value ", code "a", "."
+              , "with the pure value ", code "a", "."
               ]
             , [ codeType "(<$) ∷ Functor f ⇒ b → f a → f b" ]
             ]
@@ -87,20 +87,35 @@ theNodes =
 
     fmapAtt =
       fNode [ [ codeTitle "const a <$> f" ]
-            , [ "For each ", code "x", " drawn from ", code "f"
-            , ", result in the"
+            , [ "Run the action ", code "f", ", replacing the result"
               , newline
-              , "pure value ", code "const a x", ", or ", code "a", "."
+              , "with the function ", code "const a", " applied to it."
               ]
             , [ codeType "(<$>) ∷ Functor f ⇒ (a → b) → f a → f b" ]
             ]
 
+    apAtt =
+      fNode [ [ codeTitle "pure (const a) <*> f" ]
+            , [ "Sequentially run the actions ", code "pure (const a)"
+              , newline
+              , "and ", code "f", "."
+              ]
+            , [ "The result value is the function resulting from"
+              , newline
+              , code "pure (const a)", " applied to the value"
+              , newline
+              , "resulting from ", code "f", "."
+              ]
+            , [ codeType "(<*>) ∷ Applicative f ⇒ f (a → b) → f a → f b" ]
+            ]
+
     bindAtt =
       fNode [ [ codeTitle "const (pure a) =<< f" ]
-            , [ "For each ", code "x", " drawn from ", code "f"
-              , ", run the action"
+            , [ "Run the action resulting from applying"
               , newline
-              , code "const (pure a) x", ", or ", code "pure a", "."
+              , code "const (pure a)", " to the result value of the"
+              , newline
+              , "action ", code "f", "."
               ]
             , [ code "=<<", " lets you use the result value of "
               , code "f", " to"
@@ -108,17 +123,6 @@ theNodes =
               , "determine the next action."
               ]
             , [ codeType "(=<<) ∷ Monad f ⇒ (a → f b) → f a → f b" ]
-            ]
-
-    apAtt =
-      fNode [ [ codeTitle "pure (const a) <*> f" ]
-            , [ "Sequentially apply the function(s) resulting"
-              , newline
-              , "from the action ", code "pure (const a)", " to the"
-              , newline
-              , "result value(s) of the action ", code "f", "."
-              ]
-            , [ codeType "(<*>) ∷ Applicative f ⇒ f (a → b) → f a → f b" ]
             ]
 
     fNode :: [HtmlText] -> Attributes
