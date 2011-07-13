@@ -1,3 +1,7 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main where
 
 import Control.Applicative
@@ -5,6 +9,10 @@ import qualified Data.Colour as C
 import qualified Data.Colour.Names as C
 import Data.Graph.Inductive as GI
 import Data.GraphViz as GV
+import Data.String
+
+instance IsString HtmlTextItem where
+  fromString = HtmlStr . fromString
 
 main :: IO ()
 main  =  either error (pure . const ())
@@ -61,62 +69,54 @@ theNodes =
 
     fmapConstAtt =
       fNode [ [ codeTitle "a <$ f" ]
-            , [ HtmlStr "For each value drawn from ", code "f"
-              , HtmlStr ", discard it"
+            , [ "For each value drawn from ", code "f", ", discard it"
               , newline
-              , HtmlStr "and result in the pure value ", code "a", HtmlStr "."
+              , "and result in the pure value ", code "a", "."
               ]
             , [ codeType "(<$) ∷ Functor f ⇒ b → f a → f b" ]
             ]
 
     discardAtt =
       fNode [ [ codeTitle "pure a <* f" ]
-            , [ HtmlStr "Sequentially run the actions "
-              , code "pure a", HtmlStr " and"
+            , [ "Sequentially run the actions ", code "pure a", " and"
               , newline
-              , code "f", HtmlStr ", discarding the result value of "
-              , code "f", HtmlStr "."
+              , code "f", ", discarding the result value of ", code "f", "."
               ]
             , [ codeType "(<*) ∷ Applicative f ⇒ f b → f a → f b" ]
             ]
 
     fmapAtt =
       fNode [ [ codeTitle "const a <$> f" ]
-            , [ HtmlStr "For each ", code "x"
-              , HtmlStr " drawn from ", code "f", HtmlStr ", result in the"
+            , [ "For each ", code "x", " drawn from ", code "f"
+            , ", result in the"
               , newline
-              , HtmlStr "pure value ", code "const a x"
-              , HtmlStr ", or ", code "a", HtmlStr "."
+              , "pure value ", code "const a x", ", or ", code "a", "."
               ]
             , [ codeType "(<$>) ∷ Functor f ⇒ (a → b) → f a → f b" ]
             ]
 
     bindAtt =
       fNode [ [ codeTitle "const (pure a) =<< f" ]
-            , [ HtmlStr "For each ", code "x"
-              , HtmlStr " drawn from ", code "f"
-              , HtmlStr ", run the action"
+            , [ "For each ", code "x", " drawn from ", code "f"
+              , ", run the action"
               , newline
-              , code "const (pure a) x"
-              , HtmlStr ", or ", code "pure a", HtmlStr "."
+              , code "const (pure a) x", ", or ", code "pure a", "."
               ]
-            , [ code "=<<"
-              , HtmlStr " lets you use the result value of "
-              , code "f", HtmlStr " to"
+            , [ code "=<<", " lets you use the result value of "
+              , code "f", " to"
               , newline
-              , HtmlStr "determine the next action."
+              , "determine the next action."
               ]
             , [ codeType "(=<<) ∷ Monad f ⇒ (a → f b) → f a → f b" ]
             ]
 
     apAtt =
       fNode [ [ codeTitle "pure (const a) <*> f" ]
-            , [ HtmlStr "Sequentially apply the function(s) resulting"
+            , [ "Sequentially apply the function(s) resulting"
               , newline
-              , HtmlStr "from the action ", code "pure (const a)"
-              , HtmlStr " to the"
+              , "from the action ", code "pure (const a)", " to the"
               , newline
-              , HtmlStr "result value(s) of the action ", code "f", HtmlStr "."
+              , "result value(s) of the action ", code "f", "."
               ]
             , [ codeType "(<*>) ∷ Applicative f ⇒ f (a → b) → f a → f b" ]
             ]
@@ -139,20 +139,20 @@ theNodes =
 col :: C.Colour Double -> Double -> Color
 col c opa = fromAColour $ c `C.withOpacity` opa
 
-asTitle :: String -> HtmlTextItem
+asTitle :: HtmlTextItem -> HtmlTextItem
 asTitle = withFontAtt [ HtmlPointSize 20 ]
 
-codeTitle :: String -> HtmlTextItem
+codeTitle :: HtmlTextItem -> HtmlTextItem
 codeTitle = withFontAtt [ HtmlFace "Mono Bold", HtmlPointSize 16 ]
 
-code :: String -> HtmlTextItem
+code :: HtmlTextItem -> HtmlTextItem
 code = withFontAtt [ HtmlFace "Mono Bold" ]
 
-codeType :: String -> HtmlTextItem
+codeType :: HtmlTextItem -> HtmlTextItem
 codeType = withFontAtt [ HtmlPointSize 8, HtmlColor (col C.blue 1) ]
 
-withFontAtt :: HtmlAttributes -> String -> HtmlTextItem
-withFontAtt hatt = HtmlFont hatt . pure . HtmlStr
+withFontAtt :: HtmlAttributes -> HtmlTextItem -> HtmlTextItem
+withFontAtt hatt = HtmlFont hatt . pure
 
 newline :: HtmlTextItem
 newline = HtmlNewline []
