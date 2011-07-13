@@ -100,6 +100,12 @@ theNodes =
               , code "const (pure a) x"
               , HtmlStr ", or ", code "pure a", HtmlStr "."
               ]
+            , [ code "=<<"
+              , HtmlStr " lets you use the result value of "
+              , code "f", HtmlStr " to"
+              , newline
+              , HtmlStr "determine the next action."
+              ]
             , [ codeType "(=<<) ∷ Monad f ⇒ (a → f b) → f a → f b" ]
             ]
 
