@@ -4,7 +4,7 @@ targets := functors.png
 all : $(targets)
 
 functors.png : Functors.hs
-	runhaskell '$<'
+	runhaskell -Wall -Werror '$<'
 	optipng -o4 '$@' || :
 
 clean ::
