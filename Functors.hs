@@ -16,10 +16,10 @@ instance IsString HtmlTextItem where
 
 main :: IO ()
 main  =  either error (pure . const ())
-     =<< runGraphviz theGraph Png "functors.png"
+     =<< runGraphviz (graphFor theNodes) Png "functors.png"
 
-theGraph :: DotGraph Node
-theGraph = graphToDot params (run_ GI.empty theNodes)
+graphFor :: NodeMapM Attributes Attributes Gr () -> DotGraph Node
+graphFor = graphToDot params . run_ GI.empty
   where
     params = nonClusteredParams { globalAttributes = grAttrs
                                 , fmtNode = snd
