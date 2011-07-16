@@ -68,7 +68,7 @@ functorsNodes =
             ]
 
     fmapConstAtt =
-      fNode [ [ codeTitle "a <$ f" ]
+      table [ [ codeTitle "a <$ f" ]
             , [ "Run the action ", code "f", ", replacing the result"
               , newline
               , "with the pure value ", code "a", "."
@@ -77,7 +77,7 @@ functorsNodes =
             ]
 
     discardAtt =
-      fNode [ [ codeTitle "pure a <* f" ]
+      table [ [ codeTitle "pure a <* f" ]
             , [ "Sequentially run the actions ", code "pure a", " and"
               , newline
               , code "f", ", discarding the result value of ", code "f", "."
@@ -86,7 +86,7 @@ functorsNodes =
             ]
 
     fmapAtt =
-      fNode [ [ codeTitle "const a <$> f" ]
+      table [ [ codeTitle "const a <$> f" ]
             , [ "Run the action ", code "f", ", replacing the result"
               , newline
               , "with the function ", code "const a", " applied to it."
@@ -95,7 +95,7 @@ functorsNodes =
             ]
 
     apAtt =
-      fNode [ [ codeTitle "pure (const a) <*> f" ]
+      table [ [ codeTitle "pure (const a) <*> f" ]
             , [ "Sequentially run the actions ", code "pure (const a)"
               , newline
               , "and ", code "f", "."
@@ -110,7 +110,7 @@ functorsNodes =
             ]
 
     bindAtt =
-      fNode [ [ codeTitle "const (pure a) =<< f" ]
+      table [ [ codeTitle "const (pure a) =<< f" ]
             , [ "Run the action resulting from applying"
               , newline
               , code "const (pure a)", " to the result value of the"
@@ -125,20 +125,20 @@ functorsNodes =
             , [ codeType "(=<<) ∷ Monad f ⇒ (a → f b) → f a → f b" ]
             ]
 
-    fNode :: [HtmlText] -> Attributes
-    fNode texts = [ (Label . HtmlLabel) root ]
-      where
-        root :: HtmlLabel
-        root = HtmlTable (HTable Nothing tableAtt rows)
+table :: [HtmlText] -> Attributes
+table texts = [ (Label . HtmlLabel) root ]
+  where
+    root :: HtmlLabel
+    root = HtmlTable (HTable Nothing tableAtt rows)
 
-        rows :: [HtmlRow]
-        rows = map row texts
+    rows :: [HtmlRow]
+    rows = map row texts
 
-        row :: HtmlText -> HtmlRow
-        row cnt = HtmlRow . pure . HtmlLabelCell cellAtt . HtmlText $ cnt
+    row :: HtmlText -> HtmlRow
+    row cnt = HtmlRow . pure . HtmlLabelCell cellAtt . HtmlText $ cnt
 
-        tableAtt = [ HtmlBorder 0, HtmlCellBorder 0 ]
-        cellAtt  = [ HtmlAlign HLeft, HtmlBAlign HLeft ]
+    tableAtt = [ HtmlBorder 0, HtmlCellBorder 0 ]
+    cellAtt  = [ HtmlAlign HLeft, HtmlBAlign HLeft ]
 
 col :: C.Colour Double -> Double -> Color
 col c opa = fromAColour $ c `C.withOpacity` opa
