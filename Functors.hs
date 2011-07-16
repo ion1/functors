@@ -15,8 +15,15 @@ instance IsString HtmlTextItem where
   fromString = HtmlStr . fromString
 
 main :: IO ()
-main  =  either error (pure . const ())
-     =<< runGraphviz (graphFor functorsNodes) Png "functors.png"
+main =
+  do
+    render functorsNodes         "functors.png"
+    render functionInstanceNodes "function-instance.png"
+
+  where
+    render nodeMap filename =
+      either error (pure . const ())
+        =<< runGraphviz (graphFor nodeMap) Png filename
 
 graphFor :: NodeMapM Attributes Attributes Gr () -> DotGraph Node
 graphFor = graphToDot params . run_ GI.empty
@@ -124,6 +131,107 @@ functorsNodes =
               ]
             , [ codeType "(=<<) ∷ Monad f ⇒ (a → f b) → f a → f b" ]
             ]
+
+functionInstanceNodes :: NodeMapM Attributes Attributes Gr ()
+functionInstanceNodes =
+  do
+    mapM_ insMapNodeM [ lA2XAtt,  lA2GAtt,  lA2HAtt,   lA2FAtt,  lA2Att  ]
+    mapM_ insMapNodeM [ bindXAtt, bindGAtt, bindIdAtt, bindFAtt, bindAtt ]
+    mapM_ insMapNodeM [ apXAtt,   apIdAtt,  apHAtt,    apFAtt,   apAtt   ]
+    mapM_ insMapNodeM [ fmapXAtt, fmapGAtt,            fmapFAtt, fmapAtt ]
+
+    insMapEdgeM (fmapXAtt,  fmapGAtt,  arrowAtt)
+    insMapEdgeM (fmapGAtt,  fmapFAtt,  arrowAtt)
+
+    insMapEdgeM (apXAtt,  apIdAtt, arrowAtt)
+    insMapEdgeM (apIdAtt, apFAtt,  arrowAtt)
+    insMapEdgeM (apXAtt,  apHAtt,  arrowAtt)
+    insMapEdgeM (apHAtt,  apFAtt,  arrowAtt)
+
+    insMapEdgeM (bindXAtt,  bindGAtt,  arrowAtt)
+    insMapEdgeM (bindGAtt,  bindFAtt,  arrowAtt)
+    insMapEdgeM (bindXAtt,  bindIdAtt, arrowAtt)
+    insMapEdgeM (bindIdAtt, bindFAtt,  arrowAtt)
+
+    insMapEdgeM (lA2XAtt, lA2GAtt, arrowAtt)
+    insMapEdgeM (lA2GAtt, lA2FAtt, arrowAtt)
+    insMapEdgeM (lA2XAtt, lA2HAtt, arrowAtt)
+    insMapEdgeM (lA2HAtt, lA2FAtt, arrowAtt)
+
+    insMapEdgeM (fmapFAtt, fmapAtt, hiddenArrowAtt)
+    insMapEdgeM (apFAtt,   apAtt,   hiddenArrowAtt)
+    insMapEdgeM (bindFAtt, bindAtt, hiddenArrowAtt)
+    insMapEdgeM (lA2FAtt,  lA2Att,  hiddenArrowAtt)
+
+    pure ()
+
+  where
+    fmapFAtt  = funcAtt  "(<$>)" "f"
+    fmapGAtt  = funcAtt  "(<$>)" "g"
+    fmapXAtt  = valueAtt "(<$>)" "x"
+
+    apFAtt  = funcAtt  "(<*>)" "f"
+    apIdAtt = idAtt    "(<*>)"
+    apHAtt  = funcAtt  "(<*>)" "h"
+    apXAtt  = valueAtt "(<*>)" "x"
+
+    bindFAtt  = funcAtt  "(=<<)" "f"
+    bindGAtt  = funcAtt  "(=<<)" "g"
+    bindIdAtt = idAtt    "(=<<)"
+    bindXAtt  = valueAtt "(=<<)" "x"
+
+    lA2FAtt = funcAtt  "lA2" "f"
+    lA2GAtt = funcAtt  "lA2" "g"
+    lA2HAtt = funcAtt  "lA2" "h"
+    lA2XAtt = valueAtt "lA2" "x"
+
+    fmapAtt =
+      table [ [ codeTitle "(<$>) f g x = f (g x)" ]
+            , [ codeType "(<$>) ∷ (b → r) → (a → b) → a → r" ]
+            ]
+
+    apAtt =
+      table [ [ codeTitle "(<*>) f h x = f x (h x)" ]
+            , [ "Also known as the S combinator." ]
+            , [ codeType "(<*>) ∷ (a → b → r) → (a → b) → a → r" ]
+            ]
+
+    bindAtt =
+      table [ [ codeTitle "(=<<) f g x = f (g x) x" ]
+            , [ codeType "(=<<) ∷ (b → a → r) → (a → b) → a → r" ]
+            ]
+
+    lA2Att =
+      table [ [ codeTitle "liftA2 f g h x ≡ f (g x) (h x)" ]
+            , [ "The definition: ", code "liftA2 f g h = f <$> g <*> h" ]
+            , [ codeType "liftA2 ∷ (b → c → r) → (a → b) → (a → c) → a → r" ]
+            ]
+
+    funcAtt comment text =
+      [ Label . HtmlLabel . HtmlText . pure $ codeTitle text
+      , Comment comment
+      , FillColor (col C.darkgreen 0.2)
+      , Color . pure $ col C.black 1.0
+      ]
+
+    idAtt comment =
+      [ Label . HtmlLabel . HtmlText . pure $ " "
+      , FontSize 2
+      , Comment comment
+      , Shape Circle
+      , FillColor (fromAColour C.transparent)
+      , Color . pure $ col C.deepskyblue 0.5
+      ]
+
+    valueAtt comment text =
+      [ Label . HtmlLabel . HtmlText . pure $ codeTitle text
+      , Comment comment
+      , FillColor (col C.blue 0.2)
+      , Color . pure $ col C.black 1.0
+      ]
+
+    arrowAtt = [ ArrowHead normal, ArrowTail normal ]
+    hiddenArrowAtt = [ Style . pure $ (SItem Invisible []) ]
 
 table :: [HtmlText] -> Attributes
 table texts = [ (Label . HtmlLabel) root ]
