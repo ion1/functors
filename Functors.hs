@@ -106,9 +106,9 @@ functorsNodes =
               ]
             , [ "The result value is the function resulting from"
               , newline
-              , code "pure (const a)", " applied to the value"
+              , code "pure (const a)", " applied to the value resulting"
               , newline
-              , "resulting from ", code "f", "."
+              , "from ", code "f", "."
               ]
             , [ codeType "(<*>) ∷ Applicative f ⇒ f (a → b) → f a → f b" ]
             ]
@@ -281,10 +281,10 @@ asTitle :: HtmlTextItem -> HtmlTextItem
 asTitle = withFontAtt [ HtmlPointSize 20 ]
 
 codeTitle :: HtmlTextItem -> HtmlTextItem
-codeTitle = withFontAtt [ HtmlFace "Mono Bold", HtmlPointSize 16 ]
+codeTitle = withFontAtt [ HtmlFace "Sans Bold", HtmlPointSize 15 ]
 
 code :: HtmlTextItem -> HtmlTextItem
-code = withFontAtt [ HtmlFace "Mono Bold" ]
+code = withFontAtt [ HtmlFace "Sans Bold" ]
 
 codeType :: HtmlTextItem -> HtmlTextItem
 codeType = withFontAtt [ HtmlPointSize 8, HtmlColor (col C.blue 1) ]
