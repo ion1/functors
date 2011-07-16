@@ -66,7 +66,7 @@ functorsNodes =
     eqAtt = [ FontSize 16
             , Label . HtmlLabel . HtmlText . pure . asTitle $ "≡"
             , Shape Circle
-            , Style . pure $ (SItem Filled [])
+            , Style . pure $ SItem Filled []
             , FillColor (fromAColour C.transparent)
             , Color . pure $ col C.deepskyblue 0.5
             ]
@@ -257,7 +257,7 @@ functionInstanceNodes =
       ]
 
     arrowAtt = [ ]
-    hiddenArrowAtt = [ Style . pure $ (SItem Invisible []) ]
+    hiddenArrowAtt = [ Style . pure $ SItem Invisible [] ]
 
 table :: [HtmlText] -> Attributes
 table texts = [ (Label . HtmlLabel) root ]
