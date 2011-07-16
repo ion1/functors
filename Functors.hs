@@ -240,8 +240,8 @@ functionInstanceNodes =
 
     idAtt comment =
       [ Label . HtmlLabel . HtmlText . pure $ " "
-      , FontSize 2
       , Comment comment
+      , FixedSize True, Width 0.1, Height 0.1
       , Shape Circle
       , FillColor (fromAColour C.transparent)
       , Color . pure $ col C.deepskyblue 0.5
