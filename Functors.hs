@@ -35,6 +35,7 @@ graphFor = graphToDot params . run_ GI.empty
     grAttrs = [ GraphAttrs [ Ratio CompressRatio
                            , RankSep . pure $ 0.2
                            , RankDir FromLeft
+                           , Concentrate True
                            ]
               , NodeAttrs [ FontName "Sans"
                           , FontSize 12
