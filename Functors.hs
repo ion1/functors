@@ -44,10 +44,7 @@ graphFor = graphToDot params . run_ GI.empty
                           , Width 0
                           , Height 0
                           ]
-              , EdgeAttrs [ ArrowHead noArrow
-                          , ArrowTail noArrow
-                          , Color . pure $ col C.deepskyblue 0.5
-                          ]
+              , EdgeAttrs [ Color . pure $ col C.deepskyblue 0.5 ]
               ]
 
 functorsNodes :: NodeMapM Attributes Attributes Gr ()
@@ -56,12 +53,12 @@ functorsNodes =
     mapM_ insMapNodeM [ eqAtt, fmapConstAtt, discardAtt
                       , fmapAtt, apAtt, bindAtt ]
 
-    insMapEdgeM (fmapConstAtt, eqAtt, [])
-    insMapEdgeM (discardAtt, eqAtt, [])
+    insMapEdgeM (fmapConstAtt, eqAtt, noHeadAtt)
+    insMapEdgeM (discardAtt, eqAtt,   noHeadAtt)
 
-    insMapEdgeM (eqAtt, fmapAtt,    [])
-    insMapEdgeM (eqAtt, apAtt,      [])
-    insMapEdgeM (eqAtt, bindAtt,    [])
+    insMapEdgeM (eqAtt, fmapAtt,    noHeadAtt)
+    insMapEdgeM (eqAtt, apAtt,      noHeadAtt)
+    insMapEdgeM (eqAtt, bindAtt,    noHeadAtt)
 
     pure ()
 
@@ -131,6 +128,8 @@ functorsNodes =
               ]
             , [ codeType "(=<<) ∷ Monad f ⇒ (a → f b) → f a → f b" ]
             ]
+
+    noHeadAtt = [ ArrowHead noArrow, ArrowTail noArrow ]
 
 functionInstanceNodes :: NodeMapM Attributes Attributes Gr ()
 functionInstanceNodes =
@@ -242,7 +241,7 @@ functionInstanceNodes =
       , Color . pure $ col C.black 1.0
       ]
 
-    arrowAtt = [ ArrowHead normal, ArrowTail normal ]
+    arrowAtt = [ ]
     hiddenArrowAtt = [ Style . pure $ (SItem Invisible []) ]
 
 table :: [HtmlText] -> Attributes
