@@ -71,7 +71,7 @@ functorsNodes =
             , Color . pure $ col C.deepskyblue 0.5
             ]
 
-    fmapConstAtt =
+    fmapConstAtt = Ordering "out" :
       table [ [ codeTitle "a <$ f" ]
             , [ "Run the action ", code "f", ", replacing the result"
               , newline
@@ -80,7 +80,7 @@ functorsNodes =
             , [ codeType "(<$) ∷ Functor f ⇒ b → f a → f b" ]
             ]
 
-    discardAtt =
+    discardAtt = Ordering "out" :
       table [ [ codeTitle "pure a <* f" ]
             , [ "Sequentially run the actions ", code "pure a", " and"
               , newline
@@ -89,7 +89,7 @@ functorsNodes =
             , [ codeType "(<*) ∷ Applicative f ⇒ f b → f a → f b" ]
             ]
 
-    fmapAtt =
+    fmapAtt = Ordering "in" :
       table [ [ codeTitle "const a <$> f" ]
             , [ "Run the action ", code "f", ", replacing the result"
               , newline
@@ -98,7 +98,7 @@ functorsNodes =
             , [ codeType "(<$>) ∷ Functor f ⇒ (a → b) → f a → f b" ]
             ]
 
-    apAtt =
+    apAtt = Ordering "in" :
       table [ [ codeTitle "pure (const a) <*> f" ]
             , [ "Sequentially run the actions ", code "pure (const a)"
               , newline
@@ -113,7 +113,7 @@ functorsNodes =
             , [ codeType "(<*>) ∷ Applicative f ⇒ f (a → b) → f a → f b" ]
             ]
 
-    bindAtt =
+    bindAtt = Ordering "in" :
       table [ [ codeTitle "const (pure a) =<< f" ]
             , [ "Run the action resulting from applying"
               , newline
@@ -129,15 +129,17 @@ functorsNodes =
             , [ codeType "(=<<) ∷ Monad f ⇒ (a → f b) → f a → f b" ]
             ]
 
-    noHeadAtt = [ ArrowHead noArrow, ArrowTail noArrow ]
+    noHeadAtt = [ Dir NoDir ]
 
 functionInstanceNodes :: NodeMapM Attributes Attributes Gr ()
 functionInstanceNodes =
   do
-    mapM_ insMapNodeM [ lA2XAtt,  lA2GAtt,  lA2HAtt,   lA2FAtt,  lA2Att  ]
-    mapM_ insMapNodeM [ bindXAtt, bindGAtt, bindIdAtt, bindFAtt, bindAtt ]
-    mapM_ insMapNodeM [ apXAtt,   apIdAtt,  apHAtt,    apFAtt,   apAtt   ]
+    _ <- insMapNodeM fakeOrderingAtt
+
     mapM_ insMapNodeM [ fmapXAtt, fmapGAtt,            fmapFAtt, fmapAtt ]
+    mapM_ insMapNodeM [ apXAtt,   apIdAtt,  apHAtt,    apFAtt,   apAtt   ]
+    mapM_ insMapNodeM [ bindXAtt, bindGAtt, bindIdAtt, bindFAtt, bindAtt ]
+    mapM_ insMapNodeM [ lA2XAtt,  lA2GAtt,  lA2HAtt,   lA2FAtt,  lA2Att  ]
 
     insMapEdgeM (fmapXAtt,  fmapGAtt,  arrowAtt)
     insMapEdgeM (fmapGAtt,  fmapFAtt,  arrowAtt)
@@ -162,9 +164,19 @@ functionInstanceNodes =
     insMapEdgeM (bindFAtt, bindAtt, hiddenArrowAtt)
     insMapEdgeM (lA2FAtt,  lA2Att,  hiddenArrowAtt)
 
+    insMapEdgeM (fmapAtt, fakeOrderingAtt, fakeArrowAtt)
+    insMapEdgeM (apAtt,   fakeOrderingAtt, fakeArrowAtt)
+    insMapEdgeM (bindAtt, fakeOrderingAtt, fakeArrowAtt)
+    insMapEdgeM (lA2Att,  fakeOrderingAtt, fakeArrowAtt)
+
     pure ()
 
   where
+    fakeOrderingAtt = [ Ordering "in"
+                      , Style . pure $ SItem Invisible []
+                      ]
+    fakeArrowAtt    = [ Style . pure $ SItem Invisible [] ]
+
     fmapFAtt  = funcAtt  "(<$>)" "f"
     fmapGAtt  = funcAtt  "(<$>)" "g"
     fmapXAtt  = valueAtt "(<$>)" "x"
@@ -223,6 +235,7 @@ functionInstanceNodes =
       , Comment comment
       , FillColor (col C.darkgreen 0.2)
       , Color . pure $ col C.black 1.0
+      , Ordering "in"
       ]
 
     idAtt comment =
@@ -232,6 +245,7 @@ functionInstanceNodes =
       , Shape Circle
       , FillColor (fromAColour C.transparent)
       , Color . pure $ col C.deepskyblue 0.5
+      , Ordering "in"
       ]
 
     valueAtt comment text =
@@ -239,6 +253,7 @@ functionInstanceNodes =
       , Comment comment
       , FillColor (col C.blue 0.2)
       , Color . pure $ col C.black 1.0
+      , Ordering "in"
       ]
 
     arrowAtt = [ ]
