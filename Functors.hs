@@ -54,7 +54,7 @@ functorsNodes =
                       , fmapAtt, apAtt, bindAtt ]
 
     insMapEdgeM (fmapConstAtt, eqAtt, noHeadAtt)
-    insMapEdgeM (discardAtt, eqAtt,   noHeadAtt)
+    insMapEdgeM (discardAtt,   eqAtt, noHeadAtt)
 
     insMapEdgeM (eqAtt, fmapAtt,    noHeadAtt)
     insMapEdgeM (eqAtt, apAtt,      noHeadAtt)
