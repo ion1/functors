@@ -187,24 +187,36 @@ functionInstanceNodes =
 
     fmapAtt =
       table [ [ codeTitle "(<$>) f g x = f (g x)" ]
-            , [ codeType "(<$>) ∷ (b → r) → (a → b) → a → r" ]
+            , [ codeType "(<$>) ∷ Functor f ⇒ (a → b) → f a → f b" ]
+            , [ codeType "(<$>) ∷ (a → b) → (x → a) → x → b"
+              , typeComment " (specialized)"
+              ]
             ]
 
     apAtt =
       table [ [ codeTitle "(<*>) f h x = f x (h x)" ]
             , [ "Also known as the S combinator." ]
-            , [ codeType "(<*>) ∷ (a → b → r) → (a → b) → a → r" ]
+            , [ codeType "(<*>) ∷ Applicative f ⇒ f (a → b) → f a → f b" ]
+            , [ codeType "(<*>) ∷ (x → a → b) → (x → a) → x → b"
+              , typeComment " (specialized)"
+              ]
             ]
 
     bindAtt =
       table [ [ codeTitle "(=<<) f g x = f (g x) x" ]
-            , [ codeType "(=<<) ∷ (b → a → r) → (a → b) → a → r" ]
+            , [ codeType "(=<<) ∷ Monad f ⇒ (a → f b) → f a → f b" ]
+            , [ codeType "(=<<) ∷ (a → x → b) → (x → a) → x → b"
+              , typeComment " (specialized)"
+              ]
             ]
 
     lA2Att =
       table [ [ codeTitle "liftA2 f g h x ≡ f (g x) (h x)" ]
             , [ "The definition: ", code "liftA2 f g h = f <$> g <*> h" ]
-            , [ codeType "liftA2 ∷ (b → c → r) → (a → b) → (a → c) → a → r" ]
+            , [ codeType "liftA2 ∷ Applicative f ⇒ (a → b → c) → f a → f b → f c" ]
+            , [ codeType "liftA2 ∷ (a → b → c) → (x → a) → (x → b) → x → c"
+              , typeComment " (specialized)"
+              ]
             ]
 
     funcAtt comment text =
@@ -262,6 +274,9 @@ code = withFontAtt [ HtmlFace "Mono Bold" ]
 
 codeType :: HtmlTextItem -> HtmlTextItem
 codeType = withFontAtt [ HtmlPointSize 8, HtmlColor (col C.blue 1) ]
+
+typeComment :: HtmlTextItem -> HtmlTextItem
+typeComment = withFontAtt [ HtmlPointSize 8, HtmlColor (col C.black 0.5) ]
 
 withFontAtt :: HtmlAttributes -> HtmlTextItem -> HtmlTextItem
 withFontAtt hatt = HtmlFont hatt . pure
