@@ -16,7 +16,7 @@ instance IsString HtmlTextItem where
 
 main :: IO ()
 main  =  either error (pure . const ())
-     =<< runGraphviz (graphFor theNodes) Png "functors.png"
+     =<< runGraphviz (graphFor functorsNodes) Png "functors.png"
 
 graphFor :: NodeMapM Attributes Attributes Gr () -> DotGraph Node
 graphFor = graphToDot params . run_ GI.empty
@@ -43,8 +43,8 @@ graphFor = graphToDot params . run_ GI.empty
                           ]
               ]
 
-theNodes :: NodeMapM Attributes Attributes Gr ()
-theNodes =
+functorsNodes :: NodeMapM Attributes Attributes Gr ()
+functorsNodes =
   do
     mapM_ insMapNodeM [ eqAtt, fmapConstAtt, discardAtt
                       , fmapAtt, apAtt, bindAtt ]
