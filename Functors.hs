@@ -26,7 +26,7 @@ graphFor = graphToDot params . run_ GI.empty
                                 , fmtEdge = \(_, _, eAttrs) -> eAttrs
                                 }
     grAttrs = [ GraphAttrs [ Ratio CompressRatio
-                           , RankSep . pure $ 0
+                           , RankSep . pure $ 0.2
                            , RankDir FromLeft
                            ]
               , NodeAttrs [ FontName "Sans"
