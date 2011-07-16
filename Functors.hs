@@ -177,19 +177,19 @@ functionInstanceNodes =
                       ]
     fakeArrowAtt    = [ Style . pure $ SItem Invisible [] ]
 
-    fmapFAtt  = funcAtt  "(<$>)" "f"
-    fmapGAtt  = funcAtt  "(<$>)" "g"
-    fmapXAtt  = valueAtt "(<$>)" "x"
+    fmapFAtt  = funcAtt  "fmap" "f"
+    fmapGAtt  = funcAtt  "fmap" "g"
+    fmapXAtt  = valueAtt "fmap" "x"
 
-    apFAtt  = funcAtt  "(<*>)" "f"
-    apIdAtt = idAtt    "(<*>)"
-    apHAtt  = funcAtt  "(<*>)" "h"
-    apXAtt  = valueAtt "(<*>)" "x"
+    apFAtt  = funcAtt  "ap" "f"
+    apIdAtt = idAtt    "ap"
+    apHAtt  = funcAtt  "ap" "h"
+    apXAtt  = valueAtt "ap" "x"
 
-    bindFAtt  = funcAtt  "(=<<)" "f"
-    bindGAtt  = funcAtt  "(=<<)" "g"
-    bindIdAtt = idAtt    "(=<<)"
-    bindXAtt  = valueAtt "(=<<)" "x"
+    bindFAtt  = funcAtt  "bind" "f"
+    bindGAtt  = funcAtt  "bind" "g"
+    bindIdAtt = idAtt    "bind"
+    bindXAtt  = valueAtt "bind" "x"
 
     lA2FAtt = funcAtt  "lA2" "f"
     lA2GAtt = funcAtt  "lA2" "g"
