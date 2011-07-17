@@ -318,10 +318,10 @@ code :: HtmlTextItem -> HtmlTextItem
 code = withFontAtt [ HtmlFace "Sans Bold" ]
 
 codeType :: HtmlTextItem -> HtmlTextItem
-codeType = withFontAtt [ HtmlPointSize 8, HtmlColor (col C.blue 1) ]
+codeType = withFontAtt [ HtmlPointSize 8, HtmlColor (col C.darkgreen 1) ]
 
 typeComment :: HtmlTextItem -> HtmlTextItem
-typeComment = withFontAtt [ HtmlPointSize 8, HtmlColor (col C.black 0.5) ]
+typeComment = withFontAtt [ HtmlPointSize 8, HtmlColor (col C.black 0.3) ]
 
 withFontAtt :: HtmlAttributes -> HtmlTextItem -> HtmlTextItem
 withFontAtt hatt = HtmlFont hatt . pure
