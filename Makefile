@@ -1,5 +1,10 @@
 source := Functors.hs
-targets := functors.png function-instance.png
+targets := \
+	functors.png			\
+	function-instance-fmap.png	\
+	function-instance-ap.png	\
+	function-instance-bind.png	\
+	function-instance-lifta2.png
 
 all : $(targets)
 

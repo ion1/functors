@@ -17,8 +17,11 @@ instance IsString HtmlTextItem where
 main :: IO ()
 main =
   do
-    render functorsNodes         "functors.png"
-    render functionInstanceNodes "function-instance.png"
+    render functorsNodes     "functors.png"
+    render funcInstFmapNodes "function-instance-fmap.png"
+    render funcInstApNodes   "function-instance-ap.png"
+    render funcInstBindNodes "function-instance-bind.png"
+    render funcInstLA2Nodes  "function-instance-lifta2.png"
 
   where
     render nodeMap filename =
@@ -132,72 +135,24 @@ functorsNodes =
 
     noHeadAtt = [ Dir NoDir ]
 
-functionInstanceNodes :: NodeMapM Attributes Attributes Gr ()
-functionInstanceNodes =
+funcInstFmapNodes :: NodeMapM Attributes Attributes Gr ()
+funcInstFmapNodes =
   do
-    _ <- insMapNodeM fakeOrderingAtt
+    mapM_ insMapNodeM [ xA, gA, fA, descrA ]
 
-    mapM_ insMapNodeM [ fmapXAtt, fmapGAtt,            fmapFAtt, fmapAtt ]
-    mapM_ insMapNodeM [ apXAtt,   apIdAtt,  apHAtt,    apFAtt,   apAtt   ]
-    mapM_ insMapNodeM [ bindXAtt, bindGAtt, bindIdAtt, bindFAtt, bindAtt ]
-    mapM_ insMapNodeM [ lA2XAtt,  lA2GAtt,  lA2HAtt,   lA2FAtt,  lA2Att  ]
+    insMapEdgeM (xA, gA, [])
+    insMapEdgeM (gA, fA, [])
 
-    insMapEdgeM (fmapXAtt,  fmapGAtt,  arrowAtt)
-    insMapEdgeM (fmapGAtt,  fmapFAtt,  arrowAtt)
-
-    insMapEdgeM (apXAtt,  apIdAtt, arrowAtt)
-    insMapEdgeM (apIdAtt, apFAtt,  arrowAtt)
-    insMapEdgeM (apXAtt,  apHAtt,  arrowAtt)
-    insMapEdgeM (apHAtt,  apFAtt,  arrowAtt)
-
-    insMapEdgeM (bindXAtt,  bindGAtt,  arrowAtt)
-    insMapEdgeM (bindGAtt,  bindFAtt,  arrowAtt)
-    insMapEdgeM (bindXAtt,  bindIdAtt, arrowAtt)
-    insMapEdgeM (bindIdAtt, bindFAtt,  arrowAtt)
-
-    insMapEdgeM (lA2XAtt, lA2GAtt, arrowAtt)
-    insMapEdgeM (lA2GAtt, lA2FAtt, arrowAtt)
-    insMapEdgeM (lA2XAtt, lA2HAtt, arrowAtt)
-    insMapEdgeM (lA2HAtt, lA2FAtt, arrowAtt)
-
-    insMapEdgeM (fmapFAtt, fmapAtt, hiddenArrowAtt)
-    insMapEdgeM (apFAtt,   apAtt,   hiddenArrowAtt)
-    insMapEdgeM (bindFAtt, bindAtt, hiddenArrowAtt)
-    insMapEdgeM (lA2FAtt,  lA2Att,  hiddenArrowAtt)
-
-    insMapEdgeM (fmapAtt, fakeOrderingAtt, fakeArrowAtt)
-    insMapEdgeM (apAtt,   fakeOrderingAtt, fakeArrowAtt)
-    insMapEdgeM (bindAtt, fakeOrderingAtt, fakeArrowAtt)
-    insMapEdgeM (lA2Att,  fakeOrderingAtt, fakeArrowAtt)
+    insMapEdgeM (fA, descrA, hiddenArrowAtt)
 
     pure ()
 
   where
-    fakeOrderingAtt = [ Ordering "in"
-                      , Style . pure $ SItem Invisible []
-                      ]
-    fakeArrowAtt    = [ Style . pure $ SItem Invisible [] ]
+    fA = funcAtt  "fmap" "f"
+    gA = funcAtt  "fmap" "g"
+    xA = valueAtt "fmap" "x"
 
-    fmapFAtt  = funcAtt  "fmap" "f"
-    fmapGAtt  = funcAtt  "fmap" "g"
-    fmapXAtt  = valueAtt "fmap" "x"
-
-    apFAtt  = funcAtt  "ap" "f"
-    apIdAtt = idAtt    "ap"
-    apHAtt  = funcAtt  "ap" "h"
-    apXAtt  = valueAtt "ap" "x"
-
-    bindFAtt  = funcAtt  "bind" "f"
-    bindGAtt  = funcAtt  "bind" "g"
-    bindIdAtt = idAtt    "bind"
-    bindXAtt  = valueAtt "bind" "x"
-
-    lA2FAtt = funcAtt  "lA2" "f"
-    lA2GAtt = funcAtt  "lA2" "g"
-    lA2HAtt = funcAtt  "lA2" "h"
-    lA2XAtt = valueAtt "lA2" "x"
-
-    fmapAtt =
+    descrA =
       table [ [ codeTitle "(<$>) f g x = f (g x)" ]
             , [ codeType "(<$>) ∷ Functor f ⇒ (a → b) → f a → f b" ]
             , [ codeType "(<$>) ∷ (a → b) → (x → a) → x → b"
@@ -205,7 +160,27 @@ functionInstanceNodes =
               ]
             ]
 
-    apAtt =
+funcInstApNodes :: NodeMapM Attributes Attributes Gr ()
+funcInstApNodes =
+  do
+    mapM_ insMapNodeM [ xA, idA, hA, fA, descrA ]
+
+    insMapEdgeM (xA,  idA, [])
+    insMapEdgeM (idA, fA,  [])
+    insMapEdgeM (xA,  hA,  [])
+    insMapEdgeM (hA,  fA,  [])
+
+    insMapEdgeM (fA, descrA, hiddenArrowAtt)
+
+    pure ()
+
+  where
+    fA  = funcAtt  "ap" "f"
+    idA = idAtt    "ap"
+    hA  = funcAtt  "ap" "h"
+    xA  = valueAtt "ap" "x"
+
+    descrA =
       table [ [ codeTitle "(<*>) f h x = f x (h x)" ]
             , [ "Also known as the S combinator." ]
             , [ codeType "(<*>) ∷ Applicative f ⇒ f (a → b) → f a → f b" ]
@@ -214,7 +189,27 @@ functionInstanceNodes =
               ]
             ]
 
-    bindAtt =
+funcInstBindNodes :: NodeMapM Attributes Attributes Gr ()
+funcInstBindNodes =
+  do
+    mapM_ insMapNodeM [ xA, gA, idA, fA, descrA ]
+
+    insMapEdgeM (xA,  gA,  [])
+    insMapEdgeM (gA,  fA,  [])
+    insMapEdgeM (xA,  idA, [])
+    insMapEdgeM (idA, fA,  [])
+
+    insMapEdgeM (fA, descrA, hiddenArrowAtt)
+
+    pure ()
+
+  where
+    fA  = funcAtt  "bind" "f"
+    gA  = funcAtt  "bind" "g"
+    idA = idAtt    "bind"
+    xA  = valueAtt "bind" "x"
+
+    descrA =
       table [ [ codeTitle "(=<<) f g x = f (g x) x" ]
             , [ codeType "(=<<) ∷ Monad f ⇒ (a → f b) → f a → f b" ]
             , [ codeType "(=<<) ∷ (a → x → b) → (x → a) → x → b"
@@ -222,7 +217,27 @@ functionInstanceNodes =
               ]
             ]
 
-    lA2Att =
+funcInstLA2Nodes :: NodeMapM Attributes Attributes Gr ()
+funcInstLA2Nodes =
+  do
+    mapM_ insMapNodeM [ xA, gA, hA, fA, descrA ]
+
+    insMapEdgeM (xA, gA, [])
+    insMapEdgeM (gA, fA, [])
+    insMapEdgeM (xA, hA, [])
+    insMapEdgeM (hA, fA, [])
+
+    insMapEdgeM (fA, descrA, hiddenArrowAtt)
+
+    pure ()
+
+  where
+    fA = funcAtt  "liftA2" "f"
+    gA = funcAtt  "liftA2" "g"
+    hA = funcAtt  "liftA2" "h"
+    xA = valueAtt "liftA2" "x"
+
+    descrA =
       table [ [ codeTitle "liftA2 f g h x ≡ f (g x) (h x)" ]
             , [ "The definition: ", code "liftA2 f g h = f <$> g <*> h" ]
             , [ codeType "liftA2 ∷ Applicative f ⇒ (a → b → c) → f a → f b → f c" ]
@@ -230,35 +245,6 @@ functionInstanceNodes =
               , typeComment " (specialized)"
               ]
             ]
-
-    funcAtt comment text =
-      [ Label . HtmlLabel . HtmlText . pure $ codeTitle text
-      , Comment comment
-      , FillColor (col C.darkgreen 0.2)
-      , Color . pure $ col C.black 1.0
-      , Ordering "in"
-      ]
-
-    idAtt comment =
-      [ Label . HtmlLabel . HtmlText . pure $ " "
-      , Comment comment
-      , FixedSize True, Width 0.1, Height 0.1
-      , Shape Circle
-      , FillColor (fromAColour C.transparent)
-      , Color . pure $ col C.deepskyblue 0.5
-      , Ordering "in"
-      ]
-
-    valueAtt comment text =
-      [ Label . HtmlLabel . HtmlText . pure $ codeTitle text
-      , Comment comment
-      , FillColor (col C.blue 0.2)
-      , Color . pure $ col C.black 1.0
-      , Ordering "in"
-      ]
-
-    arrowAtt = [ ]
-    hiddenArrowAtt = [ Style . pure $ SItem Invisible [] ]
 
 table :: [HtmlText] -> Attributes
 table texts = [ (Label . HtmlLabel) root ]
@@ -298,3 +284,35 @@ withFontAtt hatt = HtmlFont hatt . pure
 
 newline :: HtmlTextItem
 newline = HtmlNewline []
+
+funcAtt :: String -> HtmlTextItem -> Attributes
+funcAtt comment text =
+  [ Label . HtmlLabel . HtmlText . pure $ codeTitle text
+  , Comment comment
+  , FillColor (col C.darkgreen 0.2)
+  , Color . pure $ col C.black 1.0
+  , Ordering "in"
+  ]
+
+idAtt :: String -> Attributes
+idAtt comment =
+  [ Label . HtmlLabel . HtmlText . pure $ " "
+  , Comment comment
+  , FixedSize True, Width 0.1, Height 0.1
+  , Shape Circle
+  , FillColor (fromAColour C.transparent)
+  , Color . pure $ col C.deepskyblue 0.5
+  , Ordering "in"
+  ]
+
+valueAtt :: String -> HtmlTextItem -> Attributes
+valueAtt comment text =
+  [ Label . HtmlLabel . HtmlText . pure $ codeTitle text
+  , Comment comment
+  , FillColor (col C.blue 0.2)
+  , Color . pure $ col C.black 1.0
+  , Ordering "in"
+  ]
+
+hiddenArrowAtt :: Attributes
+hiddenArrowAtt = [ Style . pure $ SItem Invisible [] ]
