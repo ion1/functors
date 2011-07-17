@@ -156,7 +156,7 @@ funcInstFmapNodes =
     xA = valueAtt  "fmap" "x"
 
     descrA =
-      table [ [ codeTitle "(<$>) f g x = f (g x)" ]
+      table [ [ codeTitle "(f <$> g) x = f (g x)" ]
             , [ codeType "(<$>) ∷ Functor f ⇒ (a → b) → f a → f b" ]
             , [ codeType "(<$>) ∷ (a → b) → (x → a) → x → b"
               , typeComment " (specialized)"
@@ -186,7 +186,7 @@ funcInstApNodes =
     xA  = valueAtt  "ap" "x"
 
     descrA =
-      table [ [ codeTitle "(<*>) f h x = f x (h x)" ]
+      table [ [ codeTitle "(f <*> h) x = f x (h x)" ]
             , [ "Also known as the S combinator." ]
             , [ codeType "(<*>) ∷ Applicative f ⇒ f (a → b) → f a → f b" ]
             , [ codeType "(<*>) ∷ (x → a → b) → (x → a) → x → b"
@@ -217,7 +217,7 @@ funcInstBindNodes =
     xA  = valueAtt  "bind" "x"
 
     descrA =
-      table [ [ codeTitle "(=<<) f g x = f (g x) x" ]
+      table [ [ codeTitle "(f =<< g) x = f (g x) x" ]
             , [ codeType "(=<<) ∷ Monad f ⇒ (a → f b) → f a → f b" ]
             , [ codeType "(=<<) ∷ (a → x → b) → (x → a) → x → b"
               , typeComment " (specialized)"
