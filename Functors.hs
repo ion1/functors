@@ -168,7 +168,7 @@ funcInstApNodes =
   do
     mapM_ insMapNodeM [ xA, idA, hA, fA, rA, descrA ]
 
-    insMapEdgeM (xA,  idA, [])
+    insMapEdgeM (xA,  idA, [ Dir NoDir ])
     insMapEdgeM (idA, fA,  [])
     insMapEdgeM (xA,  hA,  [])
     insMapEdgeM (hA,  fA,  [])
@@ -201,7 +201,7 @@ funcInstBindNodes =
 
     insMapEdgeM (xA,  gA,  [])
     insMapEdgeM (gA,  fA,  [])
-    insMapEdgeM (xA,  idA, [])
+    insMapEdgeM (xA,  idA, [ Dir NoDir ])
     insMapEdgeM (idA, fA,  [])
 
     insMapEdgeM (fA, rA, [])
@@ -351,8 +351,7 @@ idAtt :: String -> Attributes
 idAtt comment =
   [ Label . HtmlLabel . HtmlText . pure $ " "
   , Comment comment
-  , FixedSize True, Width 0.1, Height 0.1
-  , Shape Circle
+  , Shape PointShape
   , FillColor (fromAColour C.transparent)
   , Color . pure $ col C.deepskyblue 0.5
   , Ordering "in"
