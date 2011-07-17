@@ -22,6 +22,7 @@ main =
     render funcInstApNodes   "function-instance-ap.png"
     render funcInstBindNodes "function-instance-bind.png"
     render funcInstLA2Nodes  "function-instance-lifta2.png"
+    render onNodes           "on.png"
 
   where
     render nodeMap filename =
@@ -245,6 +246,39 @@ funcInstLA2Nodes =
               , typeComment " (specialized)"
               ]
             ]
+
+onNodes :: NodeMapM Attributes Attributes Gr ()
+onNodes =
+  do
+    mapM_ insMapNodeM [ xA, yA, gxA, gyA, fA, descrA ]
+
+    insMapEdgeM (xA,  gxA, [])
+    insMapEdgeM (yA,  gyA, [])
+    insMapEdgeM (gxA, fA,  [])
+    insMapEdgeM (gyA, fA,  [])
+
+    insMapEdgeM (gxA, gyA, eqArrowAtt)
+
+    insMapEdgeM (fA, descrA, hiddenArrowAtt)
+
+    pure ()
+
+  where
+    fA  = funcAtt  "on"    "f"
+    gxA = funcAtt  "on/gx" "g"
+    gyA = funcAtt  "on/gy" "g"
+    xA  = valueAtt "on"    "x"
+    yA  = valueAtt "on"    "y"
+
+    descrA =
+      table [ [ codeTitle "(f `on` g) x y = f (g x) (g y)" ]
+            , [ codeType "on ∷ (b → b → c) → (a → b) → a → a → c" ]
+            ]
+
+    eqArrowAtt = [ Constraint False
+                 , Dir NoDir
+                 , Style . pure $ SItem Dotted []
+                 ]
 
 table :: [HtmlText] -> Attributes
 table texts = [ (Label . HtmlLabel) root ]

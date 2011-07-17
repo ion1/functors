@@ -4,7 +4,8 @@ targets := \
 	function-instance-fmap.png	\
 	function-instance-ap.png	\
 	function-instance-bind.png	\
-	function-instance-lifta2.png
+	function-instance-lifta2.png	\
+	on.png
 
 all : $(targets)
 
