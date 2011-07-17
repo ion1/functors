@@ -139,19 +139,21 @@ functorsNodes =
 funcInstFmapNodes :: NodeMapM Attributes Attributes Gr ()
 funcInstFmapNodes =
   do
-    mapM_ insMapNodeM [ xA, gA, fA, descrA ]
+    mapM_ insMapNodeM [ xA, gA, fA, rA, descrA ]
 
     insMapEdgeM (xA, gA, [])
     insMapEdgeM (gA, fA, [])
 
-    insMapEdgeM (fA, descrA, hiddenArrowAtt)
+    insMapEdgeM (fA, rA, [])
+    insMapEdgeM (rA, descrA, hiddenArrowAtt)
 
     pure ()
 
   where
-    fA = funcAtt  "fmap" "f"
-    gA = funcAtt  "fmap" "g"
-    xA = valueAtt "fmap" "x"
+    rA = resultAtt "fmap"
+    fA = funcAtt   "fmap" "f"
+    gA = funcAtt   "fmap" "g"
+    xA = valueAtt  "fmap" "x"
 
     descrA =
       table [ [ codeTitle "(<$>) f g x = f (g x)" ]
@@ -164,22 +166,24 @@ funcInstFmapNodes =
 funcInstApNodes :: NodeMapM Attributes Attributes Gr ()
 funcInstApNodes =
   do
-    mapM_ insMapNodeM [ xA, idA, hA, fA, descrA ]
+    mapM_ insMapNodeM [ xA, idA, hA, fA, rA, descrA ]
 
     insMapEdgeM (xA,  idA, [])
     insMapEdgeM (idA, fA,  [])
     insMapEdgeM (xA,  hA,  [])
     insMapEdgeM (hA,  fA,  [])
 
-    insMapEdgeM (fA, descrA, hiddenArrowAtt)
+    insMapEdgeM (fA, rA, [])
+    insMapEdgeM (rA, descrA, hiddenArrowAtt)
 
     pure ()
 
   where
-    fA  = funcAtt  "ap" "f"
-    idA = idAtt    "ap"
-    hA  = funcAtt  "ap" "h"
-    xA  = valueAtt "ap" "x"
+    rA  = resultAtt "ap"
+    fA  = funcAtt   "ap" "f"
+    idA = idAtt     "ap"
+    hA  = funcAtt   "ap" "h"
+    xA  = valueAtt  "ap" "x"
 
     descrA =
       table [ [ codeTitle "(<*>) f h x = f x (h x)" ]
@@ -193,22 +197,24 @@ funcInstApNodes =
 funcInstBindNodes :: NodeMapM Attributes Attributes Gr ()
 funcInstBindNodes =
   do
-    mapM_ insMapNodeM [ xA, gA, idA, fA, descrA ]
+    mapM_ insMapNodeM [ xA, gA, idA, fA, rA, descrA ]
 
     insMapEdgeM (xA,  gA,  [])
     insMapEdgeM (gA,  fA,  [])
     insMapEdgeM (xA,  idA, [])
     insMapEdgeM (idA, fA,  [])
 
-    insMapEdgeM (fA, descrA, hiddenArrowAtt)
+    insMapEdgeM (fA, rA, [])
+    insMapEdgeM (rA, descrA, hiddenArrowAtt)
 
     pure ()
 
   where
-    fA  = funcAtt  "bind" "f"
-    gA  = funcAtt  "bind" "g"
-    idA = idAtt    "bind"
-    xA  = valueAtt "bind" "x"
+    rA  = resultAtt "bind"
+    fA  = funcAtt   "bind" "f"
+    gA  = funcAtt   "bind" "g"
+    idA = idAtt     "bind"
+    xA  = valueAtt  "bind" "x"
 
     descrA =
       table [ [ codeTitle "(=<<) f g x = f (g x) x" ]
@@ -221,22 +227,24 @@ funcInstBindNodes =
 funcInstLA2Nodes :: NodeMapM Attributes Attributes Gr ()
 funcInstLA2Nodes =
   do
-    mapM_ insMapNodeM [ xA, gA, hA, fA, descrA ]
+    mapM_ insMapNodeM [ xA, gA, hA, fA, rA, descrA ]
 
     insMapEdgeM (xA, gA, [])
     insMapEdgeM (gA, fA, [])
     insMapEdgeM (xA, hA, [])
     insMapEdgeM (hA, fA, [])
 
-    insMapEdgeM (fA, descrA, hiddenArrowAtt)
+    insMapEdgeM (fA, rA, [])
+    insMapEdgeM (rA, descrA, hiddenArrowAtt)
 
     pure ()
 
   where
-    fA = funcAtt  "liftA2" "f"
-    gA = funcAtt  "liftA2" "g"
-    hA = funcAtt  "liftA2" "h"
-    xA = valueAtt "liftA2" "x"
+    rA = resultAtt "liftA2"
+    fA = funcAtt   "liftA2" "f"
+    gA = funcAtt   "liftA2" "g"
+    hA = funcAtt   "liftA2" "h"
+    xA = valueAtt  "liftA2" "x"
 
     descrA =
       table [ [ codeTitle "liftA2 f g h x ≡ f (g x) (h x)" ]
@@ -250,7 +258,7 @@ funcInstLA2Nodes =
 onNodes :: NodeMapM Attributes Attributes Gr ()
 onNodes =
   do
-    mapM_ insMapNodeM [ xA, yA, gxA, gyA, fA, descrA ]
+    mapM_ insMapNodeM [ xA, yA, gxA, gyA, fA, rA, descrA ]
 
     insMapEdgeM (xA,  gxA, [])
     insMapEdgeM (yA,  gyA, [])
@@ -259,16 +267,18 @@ onNodes =
 
     insMapEdgeM (gxA, gyA, eqArrowAtt)
 
-    insMapEdgeM (fA, descrA, hiddenArrowAtt)
+    insMapEdgeM (fA, rA, [])
+    insMapEdgeM (rA, descrA, hiddenArrowAtt)
 
     pure ()
 
   where
-    fA  = funcAtt  "on"    "f"
-    gxA = funcAtt  "on/gx" "g"
-    gyA = funcAtt  "on/gy" "g"
-    xA  = valueAtt "on"    "x"
-    yA  = valueAtt "on"    "y"
+    rA  = resultAtt "on"
+    fA  = funcAtt   "on"    "f"
+    gxA = funcAtt   "on/gx" "g"
+    gyA = funcAtt   "on/gy" "g"
+    xA  = valueAtt  "on"    "x"
+    yA  = valueAtt  "on"    "y"
 
     descrA =
       table [ [ codeTitle "(f `on` g) x y = f (g x) (g y)" ]
@@ -318,6 +328,15 @@ withFontAtt hatt = HtmlFont hatt . pure
 
 newline :: HtmlTextItem
 newline = HtmlNewline []
+
+resultAtt :: String -> Attributes
+resultAtt comment =
+  [ Label . HtmlLabel . HtmlText . pure $ " "
+  , Comment comment
+  , FixedSize True, Width 0.1, Height 0.1
+  , Style . pure $ SItem Invisible []
+  , Ordering "in"
+  ]
 
 funcAtt :: String -> HtmlTextItem -> Attributes
 funcAtt comment text =
