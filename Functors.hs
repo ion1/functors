@@ -22,6 +22,7 @@ main =
     render funcInstApNodes   "function-instance-ap.png"
     render funcInstBindNodes "function-instance-bind.png"
     render funcInstLA2Nodes  "function-instance-lifta2.png"
+    render funcInstJoinNodes "function-instance-join.png"
     render onNodes           "on.png"
 
   where
@@ -251,6 +252,36 @@ funcInstLA2Nodes =
             , [ "The definition: ", code "liftA2 f g h = f <$> g <*> h" ]
             , [ codeType "liftA2 ∷ Applicative f ⇒ (a → b → c) → f a → f b → f c" ]
             , [ codeType "liftA2 ∷ (a → b → c) → (x → a) → (x → b) → x → c"
+              , typeComment " (specialized)"
+              ]
+            ]
+
+funcInstJoinNodes :: NodeMapM Attributes Attributes Gr ()
+funcInstJoinNodes =
+  do
+    mapM_ insMapNodeM [ xA, id0A, id1A, fA, rA, descrA ]
+
+    insMapEdgeM (xA, id0A, [ Dir NoDir ])
+    insMapEdgeM (xA, id1A, [ Dir NoDir ])
+    insMapEdgeM (id0A, fA, [])
+    insMapEdgeM (id1A, fA, [])
+
+    insMapEdgeM (fA, rA, [])
+    insMapEdgeM (rA, descrA, hiddenArrowAtt)
+
+    pure ()
+
+  where
+    rA   = resultAtt "join"
+    fA   = funcAtt   "join"   "f"
+    id0A = idAtt     "join/0"
+    id1A = idAtt     "join/1"
+    xA   = valueAtt  "join"   "x"
+
+    descrA =
+      table [ [ codeTitle "join f x ≡ f x x" ]
+            , [ codeType "join ∷ Monad f ⇒ f (f a) → f a" ]
+            , [ codeType "join ∷ (x → x → a) → x → a"
               , typeComment " (specialized)"
               ]
             ]

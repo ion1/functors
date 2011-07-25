@@ -5,6 +5,7 @@ targets := \
 	function-instance-ap.png	\
 	function-instance-bind.png	\
 	function-instance-lifta2.png	\
+	function-instance-join.png  	\
 	on.png
 
 all : $(targets)
